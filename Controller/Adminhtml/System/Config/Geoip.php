@@ -21,6 +21,7 @@
 
 namespace Mageplaza\GeoIP\Controller\Adminhtml\System\Config;
 
+use Alchemy\Zippy\Zippy;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Filesystem\DirectoryList;
@@ -92,8 +93,9 @@ class Geoip extends Action
             }
 
             file_put_contents($path . '/GeoLite2-City.tar.gz', fopen($this->_helperData->getDownloadPath(), 'r'));
-            $phar = new \PharData($path . '/GeoLite2-City.tar.gz');
-            $phar->extractTo($path);
+            $zippy = Zippy::load();
+            $archive = $zippy->open($path . '/GeoLite2-City.tar.gz');
+            $archive->extract($path);
             $status  = true;
             $message = __('Download library success!');
         } catch (\Exception $e) {
